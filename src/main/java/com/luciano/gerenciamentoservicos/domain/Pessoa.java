@@ -1,25 +1,41 @@
 package com.luciano.gerenciamentoservicos.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luciano.gerenciamentoservicos.domain.enums.Perfil;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class Pessoa {
+@Entity
+public abstract class Pessoa implements Serializable {
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
     protected String nome;
+
+    @Column(unique = true)
     protected String cpf;
+
+    @Column(unique = true)
     protected String email;
     protected String senha;
-    protected Set<Integer> perfils = new HashSet<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PERFIS")
+    protected Set<Integer> perfis = new HashSet<>();
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dataCriacao = LocalDate.now();
 
     public Pessoa() {
-        addPerfils(Perfil.CLIENTE);
+        addPerfis(Perfil.CLIENTE);
     }
 
     public Pessoa(Integer id, String nome, String cpf, String email, String senha) {
@@ -28,7 +44,7 @@ public abstract class Pessoa {
         this.cpf = cpf;
         this.email = email;
         this.senha = senha;
-        addPerfils(Perfil.CLIENTE);
+        addPerfis(Perfil.CLIENTE);
     }
 
     public Integer getId() {
@@ -71,12 +87,12 @@ public abstract class Pessoa {
         this.senha = senha;
     }
 
-    public Set<Perfil> getPerfils() {
-        return perfils.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+    public Set<Perfil> getPerfis() {
+        return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
     }
 
-    public void addPerfils(Perfil perfil) {
-        this.perfils.add(perfil.getCodigo());
+    public void addPerfis(Perfil perfil) {
+        this.perfis.add(perfil.getCodigo());
     }
 
     public LocalDate getDataCriacao() {
