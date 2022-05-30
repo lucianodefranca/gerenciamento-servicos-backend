@@ -1,6 +1,7 @@
 package com.luciano.gerenciamentoservicos.service;
 
 import com.luciano.gerenciamentoservicos.domain.Tecnico;
+import com.luciano.gerenciamentoservicos.domain.dtos.TecnicoDTO;
 import com.luciano.gerenciamentoservicos.repositories.TecnicoRepository;
 import com.luciano.gerenciamentoservicos.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,11 @@ public class TecnicoService {
 
     public List<Tecnico> findAll() {
         return repository.findAll();
+    }
+
+    public Tecnico create(TecnicoDTO obj) {
+        obj.setId(null);
+        Tecnico newObj = new Tecnico(obj);
+        return repository.save(newObj);
     }
 }

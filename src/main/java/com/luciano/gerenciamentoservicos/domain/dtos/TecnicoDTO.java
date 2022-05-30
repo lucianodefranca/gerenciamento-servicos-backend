@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luciano.gerenciamentoservicos.domain.Tecnico;
 import com.luciano.gerenciamentoservicos.domain.enums.Perfil;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.FetchType;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -19,6 +15,7 @@ public class TecnicoDTO implements Serializable {
 
     protected Integer id;
     protected String nome;
+    protected String cpf;
     protected String email;
     protected String senha;
     protected Set<Integer> perfis = new HashSet<>();
@@ -27,15 +24,18 @@ public class TecnicoDTO implements Serializable {
     protected LocalDate dataCriacao = LocalDate.now();
 
     public TecnicoDTO() {
+        addPerfis(Perfil.CLIENTE);
     }
 
     public TecnicoDTO(Tecnico dto) {
         this.id = dto.getId();
         this.nome = dto.getNome();
+        this.cpf = dto.getCpf();
         this.email = dto.getEmail();
         this.senha = dto.getSenha();
         this.perfis = dto.getPerfis().stream().map(x -> x.getCodigo()).collect(Collectors.toSet());
         this.dataCriacao = dto.getDataCriacao();
+        addPerfis(Perfil.CLIENTE);
     }
 
     public Integer getId() {
@@ -52,6 +52,14 @@ public class TecnicoDTO implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getEmail() {
